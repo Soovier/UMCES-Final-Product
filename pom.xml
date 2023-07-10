@@ -33,7 +33,6 @@
   	<version>0.1.55</version>
 	</dependency>
 	
-	<!-- Apache Commons VFS2 library -->
 	<dependency>	
     	<groupId>org.apache.commons</groupId>
     	<artifactId>commons-vfs2</artifactId>
@@ -45,6 +44,18 @@
       <artifactId>vfsjfilechooser2</artifactId>
       <version>0.2.9</version>
     </dependency>
+    
+   <dependency>
+    <groupId>org.knowm.xchart</groupId>
+    <artifactId>xchart</artifactId>
+    <version>3.8.4</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>org.apache.sshd</groupId>
+    <artifactId>sshd-core</artifactId>
+    <version>2.7.0</version>
+</dependency>
     
   </dependencies>
 

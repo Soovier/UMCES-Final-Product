@@ -34,11 +34,16 @@ import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+@SuppressWarnings("serial")
 public class Swing extends JPanel {
-	private static String TaxonomyFile = "";
-	private static String FastaFile = "";
+	/**
+	 * Starts the UI and Has JPanel for the main panel
+	 */
+	private static final long serialVersionUID = 1L;
+	private String TaxonomyFile = "";
+	private String FastaFile = "";
 	private static int K_Amount;
-	public static boolean Test_Train_Made;
+	public boolean Test_Train_Made;
 	public static HashMap<String, String> hashMap;
 	public JTextField searchField;
 
@@ -222,8 +227,8 @@ public class Swing extends JPanel {
 		b1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Boolean ifRan = HasRequirments("Aligment Data Added");
-				fileLogs log = new fileLogs(ifRan);
+				Boolean ifRan = HasRequirments("Aligment Data Request Has Been Sent!");
+				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
 				log.getType(1);
 			}
 		});
@@ -231,8 +236,8 @@ public class Swing extends JPanel {
 		b2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Boolean ifRan = HasRequirments("Annotation Data Added!");
-				fileLogs log = new fileLogs(ifRan);
+				Boolean ifRan = HasRequirments("Annotation Data Request Has Been Sent!");
+				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
 				log.getType(2);
 			}
 		});
@@ -240,8 +245,8 @@ public class Swing extends JPanel {
 		b3.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Boolean ifRan = HasRequirments("Trimmed Annotation Data Added!");
-				fileLogs log = new fileLogs(ifRan);
+				Boolean ifRan = HasRequirments("Trimmed Annotation Data Request Has Been Sent!");
+				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
 				log.getType(3);
 			}
 		});
@@ -372,18 +377,18 @@ public class Swing extends JPanel {
 
 	}
 
-	public void AddToHashMap(String key, String val) {
-		JLabel v1 = new JLabel(key);
-		v1.setBackground(Color.gray);
-		v1.setForeground(Color.BLACK);
-		v1.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 7));
-		System.out.println(this.logsPanel);
-		logsPanel.add(v1);
-		hashMap.put(key, val);
-
-		logsPanel.revalidate();
-		logsPanel.repaint();
-	}
+//	public void AddToHashMap(String key, String val) {
+//		JLabel v1 = new JLabel(key);
+//		v1.setBackground(Color.gray);
+//		v1.setForeground(Color.BLACK);
+//		v1.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 7));
+//		System.out.println(this.logsPanel);
+//		logsPanel.add(v1);
+//		hashMap.put(key, val);
+//
+//		logsPanel.revalidate();
+//		logsPanel.repaint();
+//	}
 
 	/**
 	 * setting the default error messages if we don't have certain files / Type 1

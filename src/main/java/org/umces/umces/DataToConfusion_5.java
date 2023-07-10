@@ -13,13 +13,13 @@ import java.util.Scanner;
 
 public class DataToConfusion_5 {
 	// Fields //
-	public int TruePositive;
-	public int TrueNegative;
-	public int FalsePositive;
-	public int FalseNegative;
+	private static int TruePositive;
+	private static int TrueNegative;
+	private static int FalsePositive;
+	private static int FalseNegative;
 
-	public int TP_Positive;
-	public int TP_Negative;
+	private static int TP_Positive;
+	private static int TP_Negative;
 
 	HashMap<String, String> originalData = new HashMap<>();
 
@@ -29,12 +29,10 @@ public class DataToConfusion_5 {
 		DataToConfusion_5 test = new DataToConfusion_5();
 		test.AppendData(args[0]);
 		test.confusionMatrix_1(args[1], args[0], args[2]);
-
 		/*
 		 * Arugment 1: ORIGINAL DATA BASE TAXONOMY FILE! Arugment 2: TRIMED TAXONOMY
 		 * FILE! Arugment 3: NEW FILE OUTPUT NAME!
 		 */
-
 		System.out.println(System.currentTimeMillis() - time + " ms");
 	}
 
@@ -129,6 +127,64 @@ public class DataToConfusion_5 {
 		}
 
 		fileResultRef.append(helper).append("\n");
+	}
+
+	public void resetMatrixNum() {
+		DataToConfusion_5.TrueNegative = 0;
+		DataToConfusion_5.TruePositive = 0;
+		DataToConfusion_5.FalseNegative = 0;
+		DataToConfusion_5.FalsePositive = 0;
+		DataToConfusion_5.TP_Negative = 0;
+		DataToConfusion_5.TP_Positive = 0;
+
+	}
+
+	public static int getTruePositive() {
+		return TruePositive;
+	}
+
+	public static void setTruePositive(int truePositive) {
+		TruePositive = truePositive;
+	}
+
+	public static int getTrueNegative() {
+		return TrueNegative;
+	}
+
+	public static void setTrueNegative(int trueNegative) {
+		TrueNegative = trueNegative;
+	}
+
+	public static int getFalsePositive() {
+		return FalsePositive;
+	}
+
+	public static void setFalsePositive(int falsePositive) {
+		FalsePositive = falsePositive;
+	}
+
+	public static int getFalseNegative() {
+		return FalseNegative;
+	}
+
+	public static void setFalseNegative(int falseNegative) {
+		FalseNegative = falseNegative;
+	}
+
+	public static int getTP_Positive() {
+		return TP_Positive;
+	}
+
+	public static void setTP_Positive(int tP_Positive) {
+		TP_Positive = tP_Positive;
+	}
+
+	public static int getTP_Negative() {
+		return TP_Negative;
+	}
+
+	public static void setTP_Negative(int tP_Negative) {
+		TP_Negative = tP_Negative;
 	}
 
 }
