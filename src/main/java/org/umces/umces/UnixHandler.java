@@ -152,4 +152,9 @@ public class UnixHandler {
 	    return fileContent.toString();
 	}
 
+	// Helps locate files in the Unix Directory
+	public String getPath(String extendPath) {
+		return "/home/" + this.username + "/" + this.rootDirectory + "/" + extendPath;
+	}
+
 }

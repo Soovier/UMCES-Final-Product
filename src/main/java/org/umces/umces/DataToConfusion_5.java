@@ -37,7 +37,7 @@ public class DataToConfusion_5 {
 	}
 
 	public double getFDR() {
-		return TP_Negative + (TP_Positive + TP_Negative);
+		return TP_Negative / (TP_Positive + TP_Negative);
 	}
 
 	public void AppendData(String orignalFile) {

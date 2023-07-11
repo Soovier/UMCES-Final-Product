@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import javax.sound.sampled.AudioInputStream;
@@ -40,8 +42,8 @@ public class Swing extends JPanel {
 	 * Starts the UI and Has JPanel for the main panel
 	 */
 	private static final long serialVersionUID = 1L;
-	private String TaxonomyFile = "";
-	private String FastaFile = "";
+	protected String TaxonomyFile = "";
+	protected String FastaFile = "";
 	private static int K_Amount;
 	public boolean Test_Train_Made;
 	public static HashMap<String, String> hashMap;
@@ -300,12 +302,21 @@ public class Swing extends JPanel {
 				Test_Train_Made = true;
 				Boolean ifRan = HasRequirments("Test and Train Data Created!");
 				if (ifRan) {
-					ClusterExE cluster = new ClusterExE(logsPanel, hashMap, frame, putty);
-					cluster.Input_TestData(K_Amount, TaxonomyFile, "", "TAX");
-					cluster.Input_TestData(K_Amount, FastaFile, "", "FASTA");
-					cluster.testData(K_Amount, "", "TAX");
-					cluster.testData(K_Amount, "", "FASTA");
-					cluster.InsertIntoUnix();
+					String command = "java " + putty.getPath("umces/MainJavaClasses/ClusterExE.java") + " " + TaxonomyFile
+							+ " " + FastaFile + " " + K_Amount;
+					putty.executeCommand(command);
+					String[] labels = { "Training_Fasta", "Training_Taxonomy", "Test_Fasta", "Test_Taxonomy" };
+					for (int i = 1; i <= K_Amount; i++) {
+						for (int k = 0; k < labels.length; k++) {
+							AddToHashMap(i + labels[k], getCurrentTimeString());
+						}
+					}
+//					ClusterExE cluster = new ClusterExE(logsPanel, hashMap, frame, putty);
+//					cluster.Input_TestData(K_Amount, TaxonomyFile, "", "TAX");
+//					cluster.Input_TestData(K_Amount, FastaFile, "", "FASTA");
+//					cluster.testData(K_Amount, "", "TAX");
+//					cluster.testData(K_Amount, "", "FASTA");
+//					cluster.InsertIntoUnix();
 				}
 			}
 		});
@@ -377,19 +388,6 @@ public class Swing extends JPanel {
 
 	}
 
-//	public void AddToHashMap(String key, String val) {
-//		JLabel v1 = new JLabel(key);
-//		v1.setBackground(Color.gray);
-//		v1.setForeground(Color.BLACK);
-//		v1.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 7));
-//		System.out.println(this.logsPanel);
-//		logsPanel.add(v1);
-//		hashMap.put(key, val);
-//
-//		logsPanel.revalidate();
-//		logsPanel.repaint();
-//	}
-
 	/**
 	 * setting the default error messages if we don't have certain files / Type 1
 	 * checks for errors
@@ -452,6 +450,32 @@ public class Swing extends JPanel {
 				}
 			}
 		});
+	}
+
+	public void AddToHashMap(String key, String val) {
+		JLabel v1 = new JLabel(key + " | : " + val);
+		v1.setBackground(Color.gray);
+		v1.setForeground(Color.BLACK);
+		v1.setFont(new Font("Century Gothic", Font.BOLD, 9));
+		logsPanel.add(v1);
+		hashMap.put(key, val);
+
+		int contentHeight = 0;
+		for (Component component : logsPanel.getComponents()) {
+			contentHeight += component.getPreferredSize().height;
+		}
+
+		// Set the preferred height of the logsPanel
+		logsPanel.setPreferredSize(new Dimension(200, 6000));
+//		Math.max(contentHeight, frame.getPreferredSize().height))
+		logsPanel.revalidate();
+		logsPanel.repaint();
+	}
+
+	public static String getCurrentTimeString() {
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
+		return now.format(formatter);
 	}
 
 	// Method for playing sound

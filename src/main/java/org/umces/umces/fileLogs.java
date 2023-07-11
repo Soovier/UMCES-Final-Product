@@ -1,7 +1,6 @@
 package org.umces.umces;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.time.LocalDateTime;
@@ -13,9 +12,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-//import Cluster.TrimMtxa2IDs_4;
-//import Cluster.VsearchToMetaxa_3;
 
 @SuppressWarnings("serial")
 public class fileLogs extends Swing {
@@ -50,35 +46,35 @@ public class fileLogs extends Swing {
 			// Run the alignment K times
 			for (int i = 1; i <= getK_Amount(); i++) {// Takes Test and Training Fasta Data
 				putty.executeCommand(
-						"vsearch --usearch_global " + startPath + (i + "Test_Fasta.fa") + " --db " + startPath
-								+ (i + "Training_Fasta.fa")
+						"vsearch --usearch_global " + putty.getPath(i + "Test_Fasta.fa") + " --db "
+								+ (putty.getPath(i + "Training_Fasta.fa"))
 								+ " --id 0.70  --maxaccepts 100 --maxrejects 50 --maxhits 1 --gapopen 0TE --gapext 0TE --userout "
-								+ (startPath + i + "TestAlignments.txt")
+								+ (putty.getPath(i + "TestAlignments.txt"))
 								+ " --userfields query+target+id+alnlen+mism+opens+qlo+qhi+tlo+thi+evalue+bits+qcov --query_cov 0.8 --threads 28"
 								+ "");
-				AddToHashMap(String.valueOf(i) + "TestAlignment", "Created: " + getCurrentTimeString());
+				AddToHashMap(String.valueOf(i) + "TestAlignment", getCurrentTimeString());
 			}
 			super.playSound("UI-Items/Conformation.aifc");
 			String error3 = "Alignment Data Has Been Added!";
 			JOptionPane.showMessageDialog(null, error3, "Sucess: 701", JOptionPane.INFORMATION_MESSAGE);
 			break;
 		case (2):
-			VsearchToMetaxa_3 annotation = new VsearchToMetaxa_3();
-			for (int i = 0; i < getK_Amount(); i++) {
-				annotation.TrimAlignment(String.valueOf(i) + "TestAlignment"); // Alignment Data
-				annotation.TrimTrainedTaxonomy(getTaxonomyFile()); // ORIGNAL DATA BASE
-				annotation.OutputFile(String.valueOf(i) + "Annotation_Data"); // OUTPUT FILE
-				AddToHashMap(String.valueOf(i) + "Annotation_Data", "Created: " + getCurrentTimeString());
+			for (int i = 1; i <= getK_Amount(); i++) {
+				String command = "java " + putty.getPath("umces/MainJavaClasses/VsearchToMetaxa_3.java") + " "
+						+ (i + "TestAlignment.txt") + " "
+						+ TaxonomyFile + " " + (i + "Annotation_Data.tax");
+				putty.executeCommand(command);
+				AddToHashMap(i + "AnnotationOutput.tax", getCurrentTimeString());
 			}
 			super.playSound("UI-Items/Conformation.aifc");
 			String error2 = "Annotation Data Has Been Added!";
 			JOptionPane.showMessageDialog(null, error2, "Sucess: 702", JOptionPane.INFORMATION_MESSAGE);
 			break;
 		case (3):
-			TrimMtxa2IDs_4 trim = new TrimMtxa2IDs_4();
-			for (int i = 0; i < getK_Amount(); i++) {
-				trim.TrimPredTaxonomy(String.valueOf(i) + "Annotation_Data", String.valueOf(i) + "Trmd_Annotation");
-				AddToHashMap(String.valueOf(i) + "Annotation_Data", "Created: " + getCurrentTimeString());
+			for (int i = 1; i <= getK_Amount(); i++) {
+				String command = "java " + putty.getPath("umces/MainJavaClasses/TrimMtxa2IDs_4.java") + " "
+						+ (i + "Annotation_Data.tax") + " " + (i + "Trimmed_Annotation.txt");
+				AddToHashMap(String.valueOf(i) + "Annotation_Data", getCurrentTimeString());
 			}
 			super.playSound("UI-Items/Conformation.aifc");
 			String error1 = "Trim Added Has Been Made";
@@ -94,7 +90,7 @@ public class fileLogs extends Swing {
 
 		public static String getCurrentTimeString() {
 			LocalDateTime now = LocalDateTime.now();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
 			return now.format(formatter);
 		}
 
@@ -128,13 +124,8 @@ public class fileLogs extends Swing {
 			logsPanel.add(v1);
 			hashMap.put(key, val);
 
-			int contentHeight = 0;
-			for (Component component : logsPanel.getComponents()) {
-				contentHeight += component.getPreferredSize().height;
-			}
-
 			// Set the preferred height of the logsPanel
-			logsPanel.setPreferredSize(new Dimension(200, Math.max(contentHeight, frame.getPreferredSize().height)));
+			logsPanel.setPreferredSize(new Dimension(200, 6000));
 
 			logsPanel.revalidate();
 			logsPanel.repaint();

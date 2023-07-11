@@ -1,48 +1,6 @@
-package org.umces.umces;
-
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.BiConsumer;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
 // This was made by Stephen Osunkunle 2023 Internship
 // Creates Files In The SAME DIRECTORY (RELATIVE) IT WAS FIRED IN!!
 public class ClusterExE {
-	private JPanel logsPanel;
-	private HashMap<String, String> hashMap;
-	private JFrame frame;
-	UnixHandler sameputty;
-
-	public ClusterExE() {
-		System.err.println("Cluster Opened Not Parameters");
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ClusterExE(JPanel panel, HashMap map, JFrame frame, UnixHandler handle) {
-		this.logsPanel = panel;
-		this.hashMap = map;
-		this.frame = frame;
-		this.sameputty = handle;
-	}
-
 	public static void main(String[] args) {
 		long time = System.currentTimeMillis();
 		String Directory = "C:/Users/Stephen Osunkunle/Desktop/Unix_Java"; // DEFAULT
@@ -56,27 +14,6 @@ public class ClusterExE {
 		test.testData(Integer.parseInt(args[2]), Directory, "TAX");
 		test.testData(Integer.parseInt(args[2]), Directory, "FASTA");
 		System.out.println(System.currentTimeMillis() - time + " ms");
-	}
-
-	public void InsertIntoUnix() {
-		JOptionPane.showMessageDialog(null, "We Are Check Your Files For You! Sit Back and Enjoy!", "Prompt: 801",
-				JOptionPane.INFORMATION_MESSAGE);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				hashMap.forEach(new BiConsumer<String, String>() {
-					@Override
-					public void accept(String key, String value) {
-						sameputty.LocaltoRemote(key);
-					}
-				});
-			}
-		}).start();
-		new Swing().playSound("UI-Items/Conformation.aifc");
-
-//		for (Map.Entry<String, String> entry : hashMap.entrySet()) {
-//			sameputty.LocaltoRemote(entry.getKey());
-//		}
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -226,26 +163,6 @@ public class ClusterExE {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void AddToHashMap(String key, String val) {
-		JLabel v1 = new JLabel(key + " | : " + val);
-		v1.setBackground(Color.gray);
-		v1.setForeground(Color.BLACK);
-		v1.setFont(new Font("Century Gothic", Font.BOLD, 9));
-		logsPanel.add(v1);
-		hashMap.put(key, val);
-
-		int contentHeight = 0;
-		for (Component component : logsPanel.getComponents()) {
-			contentHeight += component.getPreferredSize().height;
-		}
-
-		// Set the preferred height of the logsPanel
-		logsPanel.setPreferredSize(new Dimension(200, 6000));
-//		Math.max(contentHeight, frame.getPreferredSize().height))
-		logsPanel.revalidate();
-		logsPanel.repaint();
 	}
 
 	public static String getCurrentTimeString() {
