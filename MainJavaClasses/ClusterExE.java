@@ -1,9 +1,22 @@
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
 // This was made by Stephen Osunkunle 2023 Internship
 // Creates Files In The SAME DIRECTORY (RELATIVE) IT WAS FIRED IN!!
 public class ClusterExE {
+
 	public static void main(String[] args) {
 		long time = System.currentTimeMillis();
-		String Directory = "C:/Users/Stephen Osunkunle/Desktop/Unix_Java"; // DEFAULT
+		String Directory = args[3]; // DEFAULT
 //		String TaxonomyLocation = "12S_Combined.tax"; // DEFAULT args[0]
 //		String FastaLocation = "12S_Combined.fa"; // DEFAULT args[1]
 //		int K = 5; // DEFAULT args[2]
@@ -52,16 +65,16 @@ public class ClusterExE {
 
 		try {
 			for (int i = 1; i <= K; i++) {
-				String trainData_Name = i + newFileName + ending;
+				String trainData_Name = mainDirectory + i + newFileName + ending;
 				File trainedTaxfile = new File(trainData_Name);
 				if (trainedTaxfile.createNewFile()) {
 					System.out.printf("%s Data Has Been Made! \n", trainData_Name);
-					AddToHashMap(trainData_Name, getCurrentTimeString());
 					enterFileInFile(trainData_Name, K, mainDirectory, i, Type);
 				} else {
 					System.out.printf("%s Was Already Created \n", trainData_Name);
 				}
 			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -81,24 +94,24 @@ public class ClusterExE {
 				continue;
 			}
 
-			String currString = i + currentFileString + ending;
-			AddToHashMap(currString, getCurrentTimeString());
+			String currString = Directory + i + currentFileString + ending;
 			File currentFile = new File(currString);
 			FileInputStream fileInputStream;
 			try {
 				FileWriter fw = new FileWriter(createdFile, true);
-				BufferedWriter bw = new BufferedWriter(fw);
+				PrintWriter pw = new PrintWriter(fw);
 				fileInputStream = new FileInputStream(currentFile);
 				byte[] byteValue = new byte[(int) currentFile.length()];
 				fileInputStream.read(byteValue);
 				fileInputStream.close();
 
 				String fileContent = new String(byteValue, "UTF-8");
-				bw.write((fileContent));
-				bw.close();
+				pw.print((fileContent));
+				pw.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
 		}
 
 	}
@@ -137,7 +150,7 @@ public class ClusterExE {
 			List<String> lines = Files.readAllLines(Paths.get(mainFile));
 			int LinesPerFile = Math.round(lines.size() / K);
 			v1: for (int i = 1; i <= K; i++) {
-				File currFile = new File(i + FillDesc + ending);
+				File currFile = new File(Directory + i + FillDesc + ending);
 				FileWriter fw = new FileWriter(currFile, true);
 				BufferedWriter bw = new BufferedWriter(fw);
 				for (int j = counter; j < LinesPerFile * i; j++) {
@@ -163,12 +176,6 @@ public class ClusterExE {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static String getCurrentTimeString() {
-		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
-		return now.format(formatter);
 	}
 
 }

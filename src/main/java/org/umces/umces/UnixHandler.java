@@ -91,6 +91,7 @@ public class UnixHandler {
 	}
 	
 
+
 	public String executeCommand(String command) {
 		StringBuilder output = new StringBuilder();
 
@@ -109,8 +110,6 @@ public class UnixHandler {
 				output.append(line).append("\n");
 			}
 
-//			channel.disconnect();
-//			this.mainSession.disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -155,6 +154,10 @@ public class UnixHandler {
 	// Helps locate files in the Unix Directory
 	public String getPath(String extendPath) {
 		return "/home/" + this.username + "/" + this.rootDirectory + "/" + extendPath;
+	}
+
+	public String getPath() {
+		return "/home/" + this.username + "/" + this.rootDirectory + "/";
 	}
 
 }

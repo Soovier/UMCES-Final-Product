@@ -35,14 +35,14 @@ public class fileLogs extends Swing {
 	}
 
 
-	public void getType(int Type) {
+	public void getType(int Type, String Tax, String Fa) {
 		if (!this.canRun) {
 			return;
 		}
-		String startPath = "/home/" + putty.username + "/" + putty.rootDirectory + "/";
 		// Case O(n) Worst Case O(n)
 		switch (Type) {
 		case (1):
+
 			// Run the alignment K times
 			for (int i = 1; i <= getK_Amount(); i++) {// Takes Test and Training Fasta Data
 				putty.executeCommand(
@@ -52,35 +52,45 @@ public class fileLogs extends Swing {
 								+ (putty.getPath(i + "TestAlignments.txt"))
 								+ " --userfields query+target+id+alnlen+mism+opens+qlo+qhi+tlo+thi+evalue+bits+qcov --query_cov 0.8 --threads 28"
 								+ "");
-				AddToHashMap(String.valueOf(i) + "TestAlignment", getCurrentTimeString());
+				AddToHashMap(String.valueOf(i) + "TestAlignments.txt", getCurrentTimeString());
 			}
 			super.playSound("UI-Items/Conformation.aifc");
 			String error3 = "Alignment Data Has Been Added!";
 			JOptionPane.showMessageDialog(null, error3, "Sucess: 701", JOptionPane.INFORMATION_MESSAGE);
 			break;
+
 		case (2):
+
 			for (int i = 1; i <= getK_Amount(); i++) {
-				String command = "java " + putty.getPath("umces/MainJavaClasses/VsearchToMetaxa_3.java") + " "
-						+ (i + "TestAlignment.txt") + " "
-						+ TaxonomyFile + " " + (i + "Annotation_Data.tax");
+				String command = "java " + putty.getPath("UMCES-Final-Product/MainJavaClasses/VsearchToMetaxa_3.java")
+						+ " "
+						+ (putty.getPath() + i + "TestAlignments.txt") + " "
+						+ Tax + " " + (putty.getPath() + i + "Annotation_Data.tax");
 				putty.executeCommand(command);
-				AddToHashMap(i + "AnnotationOutput.tax", getCurrentTimeString());
+				AddToHashMap(i + "Annotation_Data.tax", getCurrentTimeString());
 			}
 			super.playSound("UI-Items/Conformation.aifc");
 			String error2 = "Annotation Data Has Been Added!";
 			JOptionPane.showMessageDialog(null, error2, "Sucess: 702", JOptionPane.INFORMATION_MESSAGE);
 			break;
+
 		case (3):
+
 			for (int i = 1; i <= getK_Amount(); i++) {
-				String command = "java " + putty.getPath("umces/MainJavaClasses/TrimMtxa2IDs_4.java") + " "
-						+ (i + "Annotation_Data.tax") + " " + (i + "Trimmed_Annotation.txt");
-				AddToHashMap(String.valueOf(i) + "Annotation_Data", getCurrentTimeString());
+				String command = "java "
+						+ putty.getPath("UMCES-Final-Product/MainJavaClasses/TrimMtxa2IDs_4.java") + " "
+						+ (putty.getPath() + i + "Annotation_Data.tax") + " "
+						+ (putty.getPath() + i + "Trimmed_Annotation.txt");
+				putty.executeCommand(command);
+				AddToHashMap(String.valueOf(i) + "Trimmed_Annotation.txt", getCurrentTimeString());
 			}
 			super.playSound("UI-Items/Conformation.aifc");
 			String error1 = "Trim Added Has Been Made";
 			JOptionPane.showMessageDialog(null, error1, "Sucess: 703", JOptionPane.INFORMATION_MESSAGE);
 			break;
+
 		default:
+
 			super.playSound("UI-Items/ErrorSound.aifc");
 			String error = "Case Erorr, Please Contant Developer";
 			JOptionPane.showMessageDialog(null, error, "Error: 707", JOptionPane.ERROR_MESSAGE);

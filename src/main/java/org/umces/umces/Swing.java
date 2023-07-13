@@ -231,7 +231,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Aligment Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(1);
+				log.getType(1, TaxonomyFile, FastaFile);
 			}
 		});
 
@@ -240,7 +240,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Annotation Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(2);
+				log.getType(2,TaxonomyFile, FastaFile);
 			}
 		});
 
@@ -249,7 +249,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Trimmed Annotation Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(3);
+				log.getType(3,TaxonomyFile, FastaFile);
 			}
 		});
 
@@ -259,7 +259,7 @@ public class Swing extends JPanel {
 				// Prompting the user to enter a file name for the taxonomy database
 				String taxfileName = JOptionPane.showInputDialog("Enter File Name:", TaxonomyFile);
 				if (!taxfileName.equals("null")) {
-					TaxonomyFile = taxfileName;
+					setTaxonomyFile(taxfileName);
 				}
 			}
 		});
@@ -270,7 +270,7 @@ public class Swing extends JPanel {
 				// Prompting the user to enter a file name for the fasta database
 				String fasta = JOptionPane.showInputDialog("Enter File Name:", FastaFile);
 				if (!fasta.equals("null")) {
-					FastaFile = fasta;
+					setFastaFile(fasta);
 				}
 			}
 		});
@@ -302,8 +302,9 @@ public class Swing extends JPanel {
 				Test_Train_Made = true;
 				Boolean ifRan = HasRequirments("Test and Train Data Created!");
 				if (ifRan) {
-					String command = "java " + putty.getPath("umces/MainJavaClasses/ClusterExE.java") + " " + TaxonomyFile
-							+ " " + FastaFile + " " + K_Amount;
+					String command = "java " + putty.getPath("UMCES-Final-Product/MainJavaClasses/ClusterExE.java")
+							+ " " + TaxonomyFile
+							+ " " + FastaFile + " " + K_Amount + " " + putty.getPath();
 					putty.executeCommand(command);
 					String[] labels = { "Training_Fasta", "Training_Taxonomy", "Test_Fasta", "Test_Taxonomy" };
 					for (int i = 1; i <= K_Amount; i++) {
@@ -311,12 +312,6 @@ public class Swing extends JPanel {
 							AddToHashMap(i + labels[k], getCurrentTimeString());
 						}
 					}
-//					ClusterExE cluster = new ClusterExE(logsPanel, hashMap, frame, putty);
-//					cluster.Input_TestData(K_Amount, TaxonomyFile, "", "TAX");
-//					cluster.Input_TestData(K_Amount, FastaFile, "", "FASTA");
-//					cluster.testData(K_Amount, "", "TAX");
-//					cluster.testData(K_Amount, "", "FASTA");
-//					cluster.InsertIntoUnix();
 				}
 			}
 		});
@@ -460,10 +455,6 @@ public class Swing extends JPanel {
 		logsPanel.add(v1);
 		hashMap.put(key, val);
 
-		int contentHeight = 0;
-		for (Component component : logsPanel.getComponents()) {
-			contentHeight += component.getPreferredSize().height;
-		}
 
 		// Set the preferred height of the logsPanel
 		logsPanel.setPreferredSize(new Dimension(200, 6000));

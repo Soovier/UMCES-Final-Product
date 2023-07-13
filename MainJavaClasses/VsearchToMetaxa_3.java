@@ -1,6 +1,6 @@
-package org.umces.umces;
-import java.io.BufferedWriter;
+package MainJavaClasses;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -13,13 +13,14 @@ import java.util.Scanner;
 // Stephen Osunkunle Remake 
 public class VsearchToMetaxa_3 {
 	public static void main(String[] args) {
+		System.out.println("Testing");
 		VsearchToMetaxa_3 test = new VsearchToMetaxa_3();
 //		String trainTax = "1Training_Taxonomy.tax";
 //		String alignment = "1TestAlignments.txt";
 //		String output = "1OutputTest.tax";
-
+		
 		test.TrimAlignment(args[0]); // Aligned Fasta Data
-		test.TrimTrainedTaxonomy(args[1]); // Orignal Data Base Taxonomy
+		test.TrimTrainedTaxonomy(args[1]); // (ORIGINAL DATABASE)
 		test.OutputFile(args[2]); // Output file
 	}
 
@@ -88,6 +89,10 @@ public class VsearchToMetaxa_3 {
 	// Putting all data into the output file created from parameter
 	// Passed in unix
 	public void OutputFile(String fileName) {
+		System.out.println("Length OF VDICT:" + vDict.size());
+		System.out.println("Length OF ID:" + ID.size());
+		System.out.println("Length OF SEQLEGNTH:" + SeqLength.size());
+
 		File newFile = new File(fileName);
 		try {
 			FileWriter fw = new FileWriter(newFile, true);

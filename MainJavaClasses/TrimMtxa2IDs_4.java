@@ -1,4 +1,3 @@
-package org.umces.umces;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -54,9 +53,6 @@ public class TrimMtxa2IDs_4 {
 				}
 				prdctTax.put(GI, x);
 
-//				System.out.println("Score: " + Score + " PI: " + PI);
-//				System.out.println("GI: " + line[0]);
-//				System.out.println("Lineage: " + Arrays.toString(line[1].split(";")));
 			}
 			FileWriter fw = new FileWriter(outputFile, true);
 			BufferedWriter bw = new BufferedWriter(fw);
