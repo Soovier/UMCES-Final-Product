@@ -1,8 +1,11 @@
 package org.umces.umces;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.BitmapEncoder.BitmapFormat;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
@@ -22,7 +25,7 @@ public class CoordinateGraph {
 		// Customize Chart
 		chart.getStyler().setLegendVisible(true);
 		chart.getStyler().setLegendPadding(10);
-		chart.getStyler().setMarkerSize(8);
+		chart.getStyler().setMarkerSize(15);
 
 		// Add series
 		XYSeries series = chart.addSeries("Data Points", xData, yData);
@@ -30,5 +33,12 @@ public class CoordinateGraph {
 
 		// Show the chart
 		new SwingWrapper<>(chart).displayChart();
+
+		// Save the chart as a PNG file
+		try {
+			BitmapEncoder.saveBitmap(chart, "chart_output.png", BitmapFormat.PNG);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

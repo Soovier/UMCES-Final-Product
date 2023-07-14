@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -70,7 +71,7 @@ public class Swing extends JPanel {
 		this.logsPanel = new JPanel(new FlowLayout());
 		hashMap = new HashMap<>();
 		Test_Train_Made = false;
-		K_Amount = 5;
+		K_Amount = 3;
 		frame = new JFrame("UMCES K-Foldanator By: Stephen Osunkunle");
 		centerPanel = new JPanel() {
 			@Override
@@ -82,8 +83,9 @@ public class Swing extends JPanel {
 			}
 
 		};
-		gridPanel = new JPanel(new GridLayout(8, 1, 0, 5));
+		gridPanel = new JPanel(new GridLayout(9, 2, 0, 5));
 		gridPanel.setBackground(new Color(19, 108, 150));
+		gridPanel.setPreferredSize(new Dimension(250, 500));
 		frame.add(centerPanel, BorderLayout.CENTER);
 		frame.add(gridPanel, BorderLayout.EAST);
 	}
@@ -172,23 +174,23 @@ public class Swing extends JPanel {
 
 	private void gridPanelMethod() {
 		// Creating buttons and adding them to the grid panel
-		JButton b1 = new JButton("Get Alignment Data");
+		JButton b1 = new JButton("Alignment Data");
 		gridPanel.add(b1);
 		b1.setBackground(Color.black);
 		b1.setForeground(Color.white);
-		JButton b2 = new JButton("Get Annotation Data");
+		JButton b2 = new JButton("Annotation");
 		gridPanel.add(b2);
 		b2.setBackground(Color.black);
 		b2.setForeground(Color.white);
-		JButton b3 = new JButton("Get Trimmed Data");
+		JButton b3 = new JButton("Trimmed");
 		gridPanel.add(b3);
 		b3.setBackground(Color.black);
 		b3.setForeground(Color.white);
-		JButton b4 = new JButton("Add/Change Taxonomy Database");
+		JButton b4 = new JButton("Taxonomy Database");
 		gridPanel.add(b4);
 		b4.setBackground(Color.black);
 		b4.setForeground(Color.white);
-		JButton b5 = new JButton("Add/Change Fasta Database");
+		JButton b5 = new JButton("Fasta Database");
 		gridPanel.add(b5);
 		b5.setBackground(Color.black);
 		b5.setForeground(Color.white);
@@ -199,11 +201,15 @@ public class Swing extends JPanel {
 		JButton b7 = new JButton("Create Test and Train Data");
 		gridPanel.add(b7);
 		b7.setBackground(Color.black);
-		b7.setForeground(Color.red);
+		b7.setForeground(Color.green);
 		JButton b8 = new JButton("Remove Test and Train Data");
 		gridPanel.add(b8);
 		b8.setBackground(Color.black);
-		b8.setForeground(Color.ORANGE);
+		b8.setForeground(Color.red);
+		JButton b9 = new JButton("Get FDR");
+		gridPanel.add(b9);
+		b9.setBackground(Color.black);
+		b9.setForeground(Color.white);
 
 		// Setting font styles for the buttons
 		b1.setFont(new Font("Times New Roman\r\n", Font.BOLD, 14));
@@ -214,6 +220,7 @@ public class Swing extends JPanel {
 		b6.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 10));
 		b7.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 10));
 		b8.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 10));
+		b9.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 10));
 
 		// Setting focusability for the buttons
 		b1.setFocusable(false);
@@ -224,6 +231,7 @@ public class Swing extends JPanel {
 		b6.setFocusable(false);
 		b7.setFocusable(false);
 		b8.setFocusable(false);
+		b9.setFocusable(false);
 
 		// Adding action listeners to the buttons
 		b1.addActionListener(new ActionListener() {
@@ -231,7 +239,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Aligment Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(1, TaxonomyFile, FastaFile);
+				log.getType(1, TaxonomyFile, FastaFile, getK_Amount());
 			}
 		});
 
@@ -240,7 +248,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Annotation Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(2,TaxonomyFile, FastaFile);
+				log.getType(2, TaxonomyFile, FastaFile, getK_Amount());
 			}
 		});
 
@@ -249,7 +257,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Trimmed Annotation Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(3,TaxonomyFile, FastaFile);
+				log.getType(3, TaxonomyFile, FastaFile, getK_Amount());
 			}
 		});
 
@@ -319,26 +327,10 @@ public class Swing extends JPanel {
 		b8.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String currentDirectory = System.getProperty("user.dir");
 				int cn = 0;
-				// List files in the current directory
-				File folder = new File(currentDirectory);
-				File[] listOfFiles = folder.listFiles();
-
-				for (File file : listOfFiles) {
-					if (file.isFile()) {
-						String temp = file.getName();
-						// just finding all the tranining and testing files we made and remove them from
-						// path
-						String[] labels = { "Training_Fasta", "Training_Taxonomy", "Test_Fasta", "Test_Taxonomy" };
-						for (int i = 0; i < labels.length; i++) {
-							if (temp.contains(labels[i])) {
-								cn += 1;
-								file.delete();
-							}
-						}
-					}
-				}
+				String newCommand = "find " + putty.getPath()
+						+ " -type f \\( -iname \"*.tax\" -o -iname \"*.fa\" -o -iname \"*.txt\" \\) ! -name \"12S_Combined.tax\" ! -name \"12S_Combined.fa\" -exec rm -f {} \\;";
+				putty.executeCommand(newCommand);
 
 				// Just clearing the hashmap and the JPanel
 				hashMap.clear();
@@ -349,6 +341,7 @@ public class Swing extends JPanel {
 						String labelText = label.getText();
 						String[] dataname = { "Training_Fasta", "Training_Taxonomy", "Test_Fasta", "Test_Taxonomy" };
 						for (int i = 0; i < dataname.length; i++) {
+							cn += 1;
 							if (labelText.contains(dataname[i])) {
 								logsPanel.remove(label);
 							}
@@ -380,7 +373,21 @@ public class Swing extends JPanel {
 				JOptionPane.showMessageDialog(null, message, statusmessage, OPTION);
 			}
 		});
+		
+		b9.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Boolean ifRan = HasRequirments("FDR Data Request Has Been Sent!");
+				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
+				log.getType(4, TaxonomyFile, FastaFile, getK_Amount());
+			}
+		});
 
+	}
+
+	// Tells us what the user already created inside of unix
+	public void checkForCompletedAction() {
+		List<String> everyFile = putty.listFilesInDirectory();
 	}
 
 	/**

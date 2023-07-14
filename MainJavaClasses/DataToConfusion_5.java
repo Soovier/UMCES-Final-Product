@@ -1,8 +1,10 @@
 package org.umces.umces;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -13,19 +15,18 @@ import java.util.Scanner;
 
 public class DataToConfusion_5 {
 	// Fields //
-	private static int TruePositive;
-	private static int TrueNegative;
-	private static int FalsePositive;
-	private static int FalseNegative;
+	private int TruePositive;
+	private int TrueNegative;
+	private int FalsePositive;
+	private int FalseNegative;
 
-	private static int TP_Positive;
-	private static int TP_Negative;
+	private int TP_Positive;
+	private int TP_Negative;
 
 	HashMap<String, String> originalData = new HashMap<>();
 
 	// Takes the Original Data, then the predicted Data, then the output file name
 	public static void main(String[] args) {
-		long time = System.currentTimeMillis();
 		DataToConfusion_5 test = new DataToConfusion_5();
 		test.AppendData(args[0]);
 		test.confusionMatrix_1(args[1], args[0], args[2]);
@@ -33,7 +34,30 @@ public class DataToConfusion_5 {
 		 * Arugment 1: ORIGINAL DATA BASE TAXONOMY FILE! Arugment 2: TRIMED TAXONOMY
 		 * FILE! Arugment 3: NEW FILE OUTPUT NAME!
 		 */
-		System.out.println(System.currentTimeMillis() - time + " ms");
+//		test.ShellCommandExample(String.format("echo Hi", test.TP_Positive), args[3], args[4], args[5],
+//				args[6]);
+//		test.ShellCommandExample(String.format("echo bye", test.TP_Negative), args[3], args[4], args[5],
+//				args[6]);
+	}
+	
+	public void ShellCommandExample(String command, String path, String user, String host, String pass) {
+		String username = user;
+		String remoteHost = host;
+		String password = pass;
+
+		String plinkCommand = String.format("plink -ssh %s@%s -pw %s \"%s\"", username, remoteHost, password, command);
+		try {
+			Process process = Runtime.getRuntime().exec(plinkCommand);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
+			}
+			int exitCode = process.waitFor();
+			System.out.println("Exit code: " + exitCode);
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public double getFDR() {
@@ -130,60 +154,60 @@ public class DataToConfusion_5 {
 	}
 
 	public void resetMatrixNum() {
-		DataToConfusion_5.TrueNegative = 0;
-		DataToConfusion_5.TruePositive = 0;
-		DataToConfusion_5.FalseNegative = 0;
-		DataToConfusion_5.FalsePositive = 0;
-		DataToConfusion_5.TP_Negative = 0;
-		DataToConfusion_5.TP_Positive = 0;
+		this.TrueNegative = 0;
+		this.TruePositive = 0;
+		this.FalseNegative = 0;
+		this.FalsePositive = 0;
+		this.TP_Negative = 0;
+		this.TP_Positive = 0;
 
 	}
 
-	public static int getTruePositive() {
+	public int getTruePositive() {
 		return TruePositive;
 	}
 
-	public static void setTruePositive(int truePositive) {
+	public void setTruePositive(int truePositive) {
 		TruePositive = truePositive;
 	}
 
-	public static int getTrueNegative() {
+	public int getTrueNegative() {
 		return TrueNegative;
 	}
 
-	public static void setTrueNegative(int trueNegative) {
+	public void setTrueNegative(int trueNegative) {
 		TrueNegative = trueNegative;
 	}
 
-	public static int getFalsePositive() {
+	public int getFalsePositive() {
 		return FalsePositive;
 	}
 
-	public static void setFalsePositive(int falsePositive) {
+	public void setFalsePositive(int falsePositive) {
 		FalsePositive = falsePositive;
 	}
 
-	public static int getFalseNegative() {
+	public int getFalseNegative() {
 		return FalseNegative;
 	}
 
-	public static void setFalseNegative(int falseNegative) {
+	public void setFalseNegative(int falseNegative) {
 		FalseNegative = falseNegative;
 	}
 
-	public static int getTP_Positive() {
+	public int getTP_Positive() {
 		return TP_Positive;
 	}
 
-	public static void setTP_Positive(int tP_Positive) {
+	public void setTP_Positive(int tP_Positive) {
 		TP_Positive = tP_Positive;
 	}
 
-	public static int getTP_Negative() {
+	public int getTP_Negative() {
 		return TP_Negative;
 	}
 
-	public static void setTP_Negative(int tP_Negative) {
+	public void setTP_Negative(int tP_Negative) {
 		TP_Negative = tP_Negative;
 	}
 

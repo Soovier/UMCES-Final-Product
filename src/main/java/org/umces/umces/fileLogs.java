@@ -35,7 +35,7 @@ public class fileLogs extends Swing {
 	}
 
 
-	public void getType(int Type, String Tax, String Fa) {
+	public void getType(int Type, String Tax, String Fa, int K_Amount) {
 		if (!this.canRun) {
 			return;
 		}
@@ -44,7 +44,7 @@ public class fileLogs extends Swing {
 		case (1):
 
 			// Run the alignment K times
-			for (int i = 1; i <= getK_Amount(); i++) {// Takes Test and Training Fasta Data
+			for (int i = 1; i <= K_Amount; i++) {// Takes Test and Training Fasta Data
 				putty.executeCommand(
 						"vsearch --usearch_global " + putty.getPath(i + "Test_Fasta.fa") + " --db "
 								+ (putty.getPath(i + "Training_Fasta.fa"))
@@ -61,7 +61,7 @@ public class fileLogs extends Swing {
 
 		case (2):
 
-			for (int i = 1; i <= getK_Amount(); i++) {
+			for (int i = 1; i <= K_Amount; i++) {
 				String command = "java " + putty.getPath("UMCES-Final-Product/MainJavaClasses/VsearchToMetaxa_3.java")
 						+ " "
 						+ (putty.getPath() + i + "TestAlignments.txt") + " "
@@ -76,7 +76,7 @@ public class fileLogs extends Swing {
 
 		case (3):
 
-			for (int i = 1; i <= getK_Amount(); i++) {
+			for (int i = 1; i <= K_Amount; i++) {
 				String command = "java "
 						+ putty.getPath("UMCES-Final-Product/MainJavaClasses/TrimMtxa2IDs_4.java") + " "
 						+ (putty.getPath() + i + "Annotation_Data.tax") + " "
@@ -89,8 +89,21 @@ public class fileLogs extends Swing {
 			JOptionPane.showMessageDialog(null, error1, "Sucess: 703", JOptionPane.INFORMATION_MESSAGE);
 			break;
 
+		case (4):
+			putty.executeCommand("export TP=0");
+			putty.executeCommand("export FP=0");
+			for (int i = 1; i <= K_Amount; i++) {
+				String command = "java " + putty.getPath("UMCES-Final-Product/MainJavaClasses/DataToConfusion_5.java")
+						+ " " + Tax + " " + (i + "Trimmed_Annotation.txt") + " " + (i + "Confusion_Output.txt") + " "
+						+ putty.getPath() + " " + putty.username + " " + putty.hostname + " " + putty.password;
+				System.out.println(command);
+				putty.executeCommand(command);
+				super.playSound("UI-Items/Conformation.aifc");
+				String error4 = "Confusion_Data_Matrix Added Has Been Made";
+				JOptionPane.showMessageDialog(null, error4, "Sucess: 704", JOptionPane.INFORMATION_MESSAGE);
+			}
+			break;
 		default:
-
 			super.playSound("UI-Items/ErrorSound.aifc");
 			String error = "Case Erorr, Please Contant Developer";
 			JOptionPane.showMessageDialog(null, error, "Error: 707", JOptionPane.ERROR_MESSAGE);

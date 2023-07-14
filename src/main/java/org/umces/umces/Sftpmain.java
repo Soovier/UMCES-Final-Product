@@ -13,7 +13,7 @@ public class Sftpmain {
 		UnixHandler puTTy = new UnixHandler(username, password, host, port);
 		boolean startConnect = puTTy.startConnection(remoteDirectory);
 
-		while (!startConnect) { // Forcefully connect to the unix machine
+		while (!startConnect) { // Forcefully connect to the Unix machine
 			System.err.println("Trying To Connect To Unix Machine..");
 			startConnect = puTTy.startConnection(remoteDirectory);
 		}
