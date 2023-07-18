@@ -38,7 +38,7 @@ public class fileLogs extends Swing {
 	}
 
 
-	public void getType(int Type, String Tax, String Fa, int K_Amount, CustomBackgroundPanel backgroundpanel) {
+	public void getType(int Type, String Tax, String Fa, int K_Amount, String Class_Button_Sumbit) {
 		if (!this.canRun) {
 			return;
 		}
@@ -94,15 +94,15 @@ public class fileLogs extends Swing {
 			break;
 
 		case (4):
-			this.getType(1, Tax, Fa, K_Amount, backgroundpanel);
-			this.getType(2, Tax, Fa, K_Amount, backgroundpanel);
-			this.getType(3, Tax, Fa, K_Amount, backgroundpanel);
+			this.getType(1, Tax, Fa, K_Amount, Class_Button_Sumbit);
+			this.getType(2, Tax, Fa, K_Amount, Class_Button_Sumbit);
+			this.getType(3, Tax, Fa, K_Amount, Class_Button_Sumbit);
 
 			for (int i = 1; i <= K_Amount; i++) {
 				String command = "java " + putty.getPath("UMCES-Final-Product/MainJavaClasses/DataToConfusion_5.java")
 						+ " " + Tax + " " + putty.getPath((i + "Trimmed_Annotation.txt")) + " "
 						+ putty.getPath((i + "Confusion_Output.txt")) + " "
-						+ putty.getPath() + " " + "FDRfile";
+						+ putty.getPath() + " " + "FDRfile" + " " + Class_Button_Sumbit;
 				putty.executeCommand(command);
 			}
 			;
@@ -130,7 +130,6 @@ public class fileLogs extends Swing {
 				}
 			};
 			worker.execute();
-
 
 			super.playSound("UI-Items/Conformation.aifc");
 			String error4 = "Confusion_Data_Matrix Added Has Been Made";

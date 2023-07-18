@@ -48,17 +48,13 @@ public class Swing extends JPanel {
 	public boolean Test_Train_Made;
 	public static HashMap<String, String> hashMap;
 	public JTextField searchField;
+	public String verifiedClass;
 
 	JPanel logsPanel;
 	JFrame frame;
-	JFrame doamsda;
-//	static JPanel centerPanel;
 	CustomBackgroundPanel centerPanel;
 	JPanel gridPanel;
 	UnixHandler putty;
-
-	public ImageIcon newImage;
-
 
 	public Swing(UnixHandler handle) {
 		this.putty = handle;
@@ -70,6 +66,7 @@ public class Swing extends JPanel {
 
 	// Setting up the layout for the whole UI and setting the default value type
 	{
+		this.verifiedClass = "";
 		this.searchField = new JTextField(20);
 		this.logsPanel = new JPanel(new FlowLayout());
 		hashMap = new HashMap<>();
@@ -86,7 +83,7 @@ public class Swing extends JPanel {
 //			}
 //
 //		};
-		gridPanel = new JPanel(new GridLayout(9, 2, 0, 5));
+		gridPanel = new JPanel(new GridLayout(10, 2, 0, 5));
 		gridPanel.setBackground(new Color(19, 108, 150));
 		gridPanel.setPreferredSize(new Dimension(250, 500));
 //		frame.add(centerPanel, BorderLayout.CENTER);
@@ -207,6 +204,10 @@ public class Swing extends JPanel {
 		gridPanel.add(b6);
 		b6.setBackground(Color.black);
 		b6.setForeground(Color.white);
+		JButton b10 = new JButton("Set/Change Classification");
+		gridPanel.add(b10);
+		b10.setBackground(Color.black);
+		b10.setForeground(Color.white);
 		JButton b7 = new JButton("Create Test and Train Data");
 		gridPanel.add(b7);
 		b7.setBackground(Color.black);
@@ -230,6 +231,7 @@ public class Swing extends JPanel {
 		b7.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
 		b8.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
 		b9.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
+		b10.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
 
 		// Setting focusability for the buttons
 		b1.setFocusable(false);
@@ -241,6 +243,7 @@ public class Swing extends JPanel {
 		b7.setFocusable(false);
 		b8.setFocusable(false);
 		b9.setFocusable(false);
+		b10.setFocusable(false);
 
 		// Adding action listeners to the buttons
 		b1.addActionListener(new ActionListener() {
@@ -248,7 +251,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Aligment Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(1, TaxonomyFile, FastaFile, getK_Amount(), centerPanel);
+				log.getType(1, TaxonomyFile, FastaFile, getK_Amount(), verifiedClass);
 			}
 		});
 
@@ -257,7 +260,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Annotation Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(2, TaxonomyFile, FastaFile, getK_Amount(), centerPanel);
+				log.getType(2, TaxonomyFile, FastaFile, getK_Amount(), verifiedClass);
 			}
 		});
 
@@ -266,7 +269,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Trimmed Annotation Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(3, TaxonomyFile, FastaFile, getK_Amount(), centerPanel);
+				log.getType(3, TaxonomyFile, FastaFile, getK_Amount(), verifiedClass);
 			}
 		});
 
@@ -400,7 +403,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("FDR Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(4, TaxonomyFile, FastaFile, getK_Amount(), centerPanel);
+				log.getType(4, TaxonomyFile, FastaFile, getK_Amount(), verifiedClass);
 				
 				
 				SwingUtilities.invokeLater(new Runnable() {
@@ -418,13 +421,53 @@ public class Swing extends JPanel {
 							centerPanel.revalidate(); // refresh
 
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 
 					}
 
 				});
+
+			}
+		});
+
+		b10.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String[] buttons = { "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Specices"
+
+				};
+				int rc = JOptionPane.showOptionDialog(null, "Please Select What Classification You Want To Work With!",
+						"Confirmation", JOptionPane.PLAIN_MESSAGE,
+						0, null, buttons, buttons[2]);
+				String soundFilePath = "UI-Items/Conformation.aifc";
+				switch (rc) {
+				case (0):
+					verifiedClass = "k";
+					break;
+				case (1):
+					verifiedClass = "p";
+					break;
+				case (2):
+					verifiedClass = "c";
+					break;
+				case (3):
+					verifiedClass = "o";
+					break;
+				case (4):
+					verifiedClass = "f";
+					break;
+				case (5):
+					verifiedClass = "g";
+					break;
+				case (6):
+					verifiedClass = "s";
+					break;
+				default:
+					soundFilePath = "UI-Items/ErrorSound.aifc";
+					break;
+				}
+				playSound(soundFilePath);
 
 			}
 		});
@@ -463,6 +506,11 @@ public class Swing extends JPanel {
 			playSound(soundFilePath);
 			String Error = "Please Set Your K-Amount.";
 			JOptionPane.showMessageDialog(null, Error, "Error: 111", JOptionPane.ERROR_MESSAGE);
+			return false;
+		} else if (verifiedClass.equals("")) {
+			playSound(soundFilePath);
+			String Error = "Please Set Classification.";
+			JOptionPane.showMessageDialog(null, Error, "Error: 116", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		String corret_music = "UI-Items/Conformation.aifc";

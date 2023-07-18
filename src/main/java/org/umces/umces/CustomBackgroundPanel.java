@@ -22,7 +22,6 @@ public class CustomBackgroundPanel extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(bgImage.getImage(), 0, 0, getWidth(), getHeight(), null);
-//		g.drawImage(bgImage.getImage(), 0, 0, null);
 	}
 
 
