@@ -5,17 +5,15 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -33,6 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -53,9 +52,13 @@ public class Swing extends JPanel {
 	JPanel logsPanel;
 	JFrame frame;
 	JFrame doamsda;
-	JPanel centerPanel;
+//	static JPanel centerPanel;
+	CustomBackgroundPanel centerPanel;
 	JPanel gridPanel;
 	UnixHandler putty;
+
+	public ImageIcon newImage;
+
 
 	public Swing(UnixHandler handle) {
 		this.putty = handle;
@@ -71,22 +74,22 @@ public class Swing extends JPanel {
 		this.logsPanel = new JPanel(new FlowLayout());
 		hashMap = new HashMap<>();
 		Test_Train_Made = false;
-		K_Amount = 3;
+//		K_Amount = 3;
 		frame = new JFrame("UMCES K-Foldanator By: Stephen Osunkunle");
-		centerPanel = new JPanel() {
-			@Override
-			protected void paintComponent(Graphics g) {
-				super.paintComponent(g);
-				ImageIcon background = new ImageIcon("UI-Items/newbackground.jpg");
-				Image img = background.getImage();
-				g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
-			}
-
-		};
+//		centerPanel = new JPanel() {
+//			@Override
+//			protected void paintComponent(Graphics g) {
+//				super.paintComponent(g);
+//				ImageIcon background = new ImageIcon("UI-Items/newbackground.jpg");
+//				Image img = background.getImage();
+//				g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
+//			}
+//
+//		};
 		gridPanel = new JPanel(new GridLayout(9, 2, 0, 5));
 		gridPanel.setBackground(new Color(19, 108, 150));
 		gridPanel.setPreferredSize(new Dimension(250, 500));
-		frame.add(centerPanel, BorderLayout.CENTER);
+//		frame.add(centerPanel, BorderLayout.CENTER);
 		frame.add(gridPanel, BorderLayout.EAST);
 	}
 
@@ -102,6 +105,12 @@ public class Swing extends JPanel {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		ImageIcon backgrImage = new ImageIcon("UI-Items/newbackground.jpg");
+		centerPanel = new CustomBackgroundPanel();
+		centerPanel.setBgImage(backgrImage);
+		frame.add(centerPanel, BorderLayout.CENTER);
+		
 		ImageIcon icon = new ImageIcon("UI-Items/UMCESLogo.jpg");
 		frame.setPreferredSize(new Dimension(950, 520));
 		frame.setResizable(false);
@@ -164,7 +173,7 @@ public class Swing extends JPanel {
 				logsPanel.repaint();
 			}
 		});
-
+		
 		frame.add(mainPanel, BorderLayout.WEST);
 		frame.pack();
 		frame.setLocationByPlatform(true);
@@ -174,35 +183,35 @@ public class Swing extends JPanel {
 
 	private void gridPanelMethod() {
 		// Creating buttons and adding them to the grid panel
-		JButton b1 = new JButton("Alignment Data");
+		JButton b1 = new JButton("Get Alignment Data");
 		gridPanel.add(b1);
 		b1.setBackground(Color.black);
 		b1.setForeground(Color.white);
-		JButton b2 = new JButton("Annotation");
+		JButton b2 = new JButton("Get Annotation Data");
 		gridPanel.add(b2);
 		b2.setBackground(Color.black);
 		b2.setForeground(Color.white);
-		JButton b3 = new JButton("Trimmed");
+		JButton b3 = new JButton("Get Trimmed Data");
 		gridPanel.add(b3);
 		b3.setBackground(Color.black);
 		b3.setForeground(Color.white);
-		JButton b4 = new JButton("Taxonomy Database");
+		JButton b4 = new JButton("Add/Change Taxonomy Database");
 		gridPanel.add(b4);
 		b4.setBackground(Color.black);
 		b4.setForeground(Color.white);
-		JButton b5 = new JButton("Fasta Database");
+		JButton b5 = new JButton("Add/Change Fasta Database");
 		gridPanel.add(b5);
 		b5.setBackground(Color.black);
 		b5.setForeground(Color.white);
-		JButton b6 = new JButton("Set K Fold");
+		JButton b6 = new JButton("Set/Change K Fold");
 		gridPanel.add(b6);
 		b6.setBackground(Color.black);
-		b6.setForeground(Color.green);
+		b6.setForeground(Color.white);
 		JButton b7 = new JButton("Create Test and Train Data");
 		gridPanel.add(b7);
 		b7.setBackground(Color.black);
 		b7.setForeground(Color.green);
-		JButton b8 = new JButton("Remove Test and Train Data");
+		JButton b8 = new JButton("Remove All Data From Directory");
 		gridPanel.add(b8);
 		b8.setBackground(Color.black);
 		b8.setForeground(Color.red);
@@ -212,15 +221,15 @@ public class Swing extends JPanel {
 		b9.setForeground(Color.white);
 
 		// Setting font styles for the buttons
-		b1.setFont(new Font("Times New Roman\r\n", Font.BOLD, 14));
-		b2.setFont(new Font("Times New Roman\r\n", Font.BOLD, 14));
-		b3.setFont(new Font("Times New Roman\r\n", Font.BOLD, 14));
-		b4.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 10));
-		b5.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 10));
-		b6.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 10));
-		b7.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 10));
-		b8.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 10));
-		b9.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 10));
+		b1.setFont(new Font("Times New Roman\r\n", Font.BOLD, 18));
+		b2.setFont(new Font("Times New Roman\r\n", Font.BOLD, 18));
+		b3.setFont(new Font("Times New Roman\r\n", Font.BOLD, 18));
+		b4.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
+		b5.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
+		b6.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
+		b7.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
+		b8.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
+		b9.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
 
 		// Setting focusability for the buttons
 		b1.setFocusable(false);
@@ -239,7 +248,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Aligment Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(1, TaxonomyFile, FastaFile, getK_Amount());
+				log.getType(1, TaxonomyFile, FastaFile, getK_Amount(), centerPanel);
 			}
 		});
 
@@ -248,7 +257,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Annotation Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(2, TaxonomyFile, FastaFile, getK_Amount());
+				log.getType(2, TaxonomyFile, FastaFile, getK_Amount(), centerPanel);
 			}
 		});
 
@@ -257,7 +266,7 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("Trimmed Annotation Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(3, TaxonomyFile, FastaFile, getK_Amount());
+				log.getType(3, TaxonomyFile, FastaFile, getK_Amount(), centerPanel);
 			}
 		});
 
@@ -320,6 +329,8 @@ public class Swing extends JPanel {
 							AddToHashMap(i + labels[k], getCurrentTimeString());
 						}
 					}
+				} else {
+					Test_Train_Made = false;
 				}
 			}
 		});
@@ -331,6 +342,7 @@ public class Swing extends JPanel {
 				String newCommand = "find " + putty.getPath()
 						+ " -type f \\( -iname \"*.tax\" -o -iname \"*.fa\" -o -iname \"*.txt\" \\) ! -name \"12S_Combined.tax\" ! -name \"12S_Combined.fa\" -exec rm -f {} \\;";
 				putty.executeCommand(newCommand);
+//				putty.executeCommand("find " + putty.getPath() + " -type f \\(rm FDRfile)");
 
 				// Just clearing the hashmap and the JPanel
 				hashMap.clear();
@@ -339,13 +351,22 @@ public class Swing extends JPanel {
 					if (component instanceof JLabel) {
 						JLabel label = (JLabel) component;
 						String labelText = label.getText();
-						String[] dataname = { "Training_Fasta", "Training_Taxonomy", "Test_Fasta", "Test_Taxonomy" };
-						for (int i = 0; i < dataname.length; i++) {
+
+						if (labelText.contains("Logs")) {
+							continue;
+						} else {
+							logsPanel.remove(label);
 							cn += 1;
-							if (labelText.contains(dataname[i])) {
-								logsPanel.remove(label);
-							}
 						}
+
+
+//						String[] dataname = { "Training_Fasta", "Training_Taxonomy", "Test_Fasta", "Test_Taxonomy" };
+//						for (int i = 0; i < dataname.length; i++) {
+//							cn += 1;
+//							if (labelText.contains(dataname[i])) {
+//								logsPanel.remove(label);
+//							}
+//						}
 					}
 				}
 
@@ -379,16 +400,37 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("FDR Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(4, TaxonomyFile, FastaFile, getK_Amount());
+				log.getType(4, TaxonomyFile, FastaFile, getK_Amount(), centerPanel);
+				
+				
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						File imgFile = new File("chart_output.png");
+						if (!imgFile.exists()) {
+							System.out.println("Image file not found");
+						}
+						// Read image file into bytes
+						try {
+							byte[] imgBytes = Files.readAllBytes(imgFile.toPath());
+							ImageIcon Icon = new ImageIcon(imgBytes);
+							centerPanel.setBgImage(Icon);
+							centerPanel.repaint();
+							centerPanel.revalidate(); // refresh
+
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+
+				});
+
 			}
 		});
 
 	}
 
-	// Tells us what the user already created inside of unix
-	public void checkForCompletedAction() {
-		List<String> everyFile = putty.listFilesInDirectory();
-	}
 
 	/**
 	 * setting the default error messages if we don't have certain files / Type 1
@@ -417,6 +459,11 @@ public class Swing extends JPanel {
 			String Error = "No Train or Testing Data.";
 			JOptionPane.showMessageDialog(null, Error, "Error: 109", JOptionPane.ERROR_MESSAGE);
 			return false;
+		} else if (K_Amount <= 0) {
+			playSound(soundFilePath);
+			String Error = "Please Set Your K-Amount.";
+			JOptionPane.showMessageDialog(null, Error, "Error: 111", JOptionPane.ERROR_MESSAGE);
+			return false;
 		}
 		String corret_music = "UI-Items/Conformation.aifc";
 		playSound(corret_music);
@@ -427,7 +474,7 @@ public class Swing extends JPanel {
 	// PROMPT BROWSING FOR FILES //
 	private void addDirectoryExplorer() {
 		// Creating a text field to display the file path
-		final JTextField textField = new JTextField("FILE PATH WILL BE PRINTED HERE!!");
+		final JTextField textField = new JTextField("LOCAL DIRECTORY PATH!!");
 		textField.setFont(new Font("Times New Roman\r\n" + "" + "", Font.ITALIC, 12));
 		textField.setEditable(false);
 		frame.add(textField, BorderLayout.NORTH);
@@ -488,7 +535,6 @@ public class Swing extends JPanel {
 			e.printStackTrace();
 		}
 	}
-
 	public String getTaxonomyFile() {
 		return TaxonomyFile;
 	}

@@ -13,11 +13,10 @@ import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
 public class CoordinateGraph {
-	public static ArrayList<Double> xData = new ArrayList<>(Arrays.asList(2.0, 4.0, 8.0, 16.0));
-	public static ArrayList<Double> yData = new ArrayList<>(Arrays.asList(0.3, 1.0, 6.4, 8.1));
+	public static ArrayList<Double> xData = new ArrayList<>(Arrays.asList(0.0));
+	public static ArrayList<Double> yData = new ArrayList<>(Arrays.asList(0.0));
 
-	public static void main(String[] args) {
-
+	public void main() {
 		// Create Chart
 		XYChart chart = new XYChartBuilder().width(600).height(400).title("K-Folds Graph").xAxisTitle("K-Folds")
 				.yAxisTitle("False Discovery Rate").build();
@@ -26,6 +25,8 @@ public class CoordinateGraph {
 		chart.getStyler().setLegendVisible(true);
 		chart.getStyler().setLegendPadding(10);
 		chart.getStyler().setMarkerSize(15);
+
+		chart.getStyler().setToolTipsEnabled(true);
 
 		// Add series
 		XYSeries series = chart.addSeries("Data Points", xData, yData);

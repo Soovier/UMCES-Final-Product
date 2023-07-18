@@ -3,6 +3,8 @@ package org.umces.umces;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 @SuppressWarnings("serial")
 public class fileLogs extends Swing {
@@ -35,10 +38,11 @@ public class fileLogs extends Swing {
 	}
 
 
-	public void getType(int Type, String Tax, String Fa, int K_Amount) {
+	public void getType(int Type, String Tax, String Fa, int K_Amount, CustomBackgroundPanel backgroundpanel) {
 		if (!this.canRun) {
 			return;
 		}
+//		System.out.println(K_Amount);
 		// Case O(n) Worst Case O(n)
 		switch (Type) {
 		case (1):
@@ -90,25 +94,54 @@ public class fileLogs extends Swing {
 			break;
 
 		case (4):
-			putty.executeCommand("export TP=0");
-			putty.executeCommand("export FP=0");
+			this.getType(1, Tax, Fa, K_Amount, backgroundpanel);
+			this.getType(2, Tax, Fa, K_Amount, backgroundpanel);
+			this.getType(3, Tax, Fa, K_Amount, backgroundpanel);
+
 			for (int i = 1; i <= K_Amount; i++) {
 				String command = "java " + putty.getPath("UMCES-Final-Product/MainJavaClasses/DataToConfusion_5.java")
-						+ " " + Tax + " " + (i + "Trimmed_Annotation.txt") + " " + (i + "Confusion_Output.txt") + " "
-						+ putty.getPath() + " " + putty.username + " " + putty.hostname + " " + putty.password;
-				System.out.println(command);
+						+ " " + Tax + " " + putty.getPath((i + "Trimmed_Annotation.txt")) + " "
+						+ putty.getPath((i + "Confusion_Output.txt")) + " "
+						+ putty.getPath() + " " + "FDRfile";
 				putty.executeCommand(command);
-				super.playSound("UI-Items/Conformation.aifc");
-				String error4 = "Confusion_Data_Matrix Added Has Been Made";
-				JOptionPane.showMessageDialog(null, error4, "Sucess: 704", JOptionPane.INFORMATION_MESSAGE);
 			}
+			;
+			String v1 = putty.readRemoteFile(putty.getPath("FDRfile"));
+			double TP = Double.valueOf((v1.split(";")[0].split("=")[1]));
+			double FP = Double.valueOf((v1.split(";")[1].split("=")[1]));
+			final double FDR = FP / (TP + FP);
+
+
+			final double newK_Amount = Double.valueOf(K_Amount);
+			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+				@SuppressWarnings("static-access")
+				@Override
+				protected Void doInBackground() {
+					// Create and show graph
+					CoordinateGraph graph = new CoordinateGraph();
+					BigDecimal bd = new BigDecimal(FDR);
+					bd = bd.setScale(4, RoundingMode.HALF_UP);
+
+					System.out.println(bd);
+					graph.xData.add(newK_Amount);
+					graph.yData.add(FDR);
+					graph.main();
+					return null;
+				}
+			};
+			worker.execute();
+
+
+			super.playSound("UI-Items/Conformation.aifc");
+			String error4 = "Confusion_Data_Matrix Added Has Been Made";
+			JOptionPane.showMessageDialog(null, error4, "Sucess: 704", JOptionPane.INFORMATION_MESSAGE);
 			break;
 		default:
 			super.playSound("UI-Items/ErrorSound.aifc");
 			String error = "Case Erorr, Please Contant Developer";
 			JOptionPane.showMessageDialog(null, error, "Error: 707", JOptionPane.ERROR_MESSAGE);
 			break;
-			}
+		}
 	}
 
 		public static String getCurrentTimeString() {

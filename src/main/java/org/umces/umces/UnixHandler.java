@@ -55,7 +55,6 @@ public class UnixHandler {
 			this.mainsftpChannel.connect();
 			this.mainsftpChannel.cd(remoteDirectory);
 			this.rootDirectory = remoteDirectory;
-
         } catch (Exception e) {
             e.printStackTrace();
 			return false;
@@ -91,7 +90,6 @@ public class UnixHandler {
 		return false;
 	}
 	
-
 
 	public String executeCommand(String command) {
 		StringBuilder output = new StringBuilder();

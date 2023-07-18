@@ -1,10 +1,9 @@
-package org.umces.umces;
-import java.io.BufferedReader;
+package MainJavaClasses;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -33,31 +32,18 @@ public class DataToConfusion_5 {
 		/*
 		 * Arugment 1: ORIGINAL DATA BASE TAXONOMY FILE! Arugment 2: TRIMED TAXONOMY
 		 * FILE! Arugment 3: NEW FILE OUTPUT NAME!
-		 */
-//		test.ShellCommandExample(String.format("echo Hi", test.TP_Positive), args[3], args[4], args[5],
-//				args[6]);
-//		test.ShellCommandExample(String.format("echo bye", test.TP_Negative), args[3], args[4], args[5],
-//				args[6]);
+//		 */
+		test.ShellCommandExample(args[3], args[4]);
 	}
-	
-	public void ShellCommandExample(String command, String path, String user, String host, String pass) {
-		String username = user;
-		String remoteHost = host;
-		String password = pass;
-
-		String plinkCommand = String.format("plink -ssh %s@%s -pw %s \"%s\"", username, remoteHost, password, command);
+		
+	public void ShellCommandExample(String path, String fileName) {
 		try {
-			Process process = Runtime.getRuntime().exec(plinkCommand);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				System.out.println(line);
-			}
-			int exitCode = process.waitFor();
-			System.out.println("Exit code: " + exitCode);
-		} catch (IOException | InterruptedException e) {
+			FileWriter fw = new FileWriter(path + fileName);
+			fw.write("TP=" + this.TP_Positive + ";" + "FP=" + this.TP_Negative);
+			fw.close();
+		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}	
 	}
 
 	public double getFDR() {
