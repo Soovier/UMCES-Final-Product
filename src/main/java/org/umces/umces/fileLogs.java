@@ -104,11 +104,8 @@ public class fileLogs extends Swing {
 						+ putty.getPath((i + "Confusion_Output.txt")) + " "
 						+ putty.getPath() + " " + "FDRfile" + " " + Class_Button_Sumbit;
 				putty.executeCommand(command);
-				System.out.println(command);
 			}
-			System.out.println(Class_Button_Sumbit);
 
-			;
 			String v1 = putty.readRemoteFile(putty.getPath("FDRfile"));
 			double TP = Double.valueOf((v1.split(";")[0].split("=")[1]));
 			double FP = Double.valueOf((v1.split(";")[1].split("=")[1]));
