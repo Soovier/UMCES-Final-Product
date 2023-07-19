@@ -345,6 +345,7 @@ public class Swing extends JPanel {
 				String newCommand = "find " + putty.getPath()
 						+ " -type f \\( -iname \"*.tax\" -o -iname \"*.fa\" -o -iname \"*.txt\" \\) ! -name \"12S_Combined.tax\" ! -name \"12S_Combined.fa\" -exec rm -f {} \\;";
 				putty.executeCommand(newCommand);
+				putty.RemoveFromDiretory("FDRfile");
 //				putty.executeCommand("find " + putty.getPath() + " -type f \\(rm FDRfile)");
 
 				// Just clearing the hashmap and the JPanel

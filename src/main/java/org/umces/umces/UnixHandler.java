@@ -90,6 +90,13 @@ public class UnixHandler {
 		return false;
 	}
 	
+	public void RemoveFromDiretory(String path) {
+		try {
+			this.mainsftpChannel.rm(this.getPath(path));
+		} catch (SftpException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public String executeCommand(String command) {
 		StringBuilder output = new StringBuilder();

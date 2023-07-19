@@ -104,7 +104,10 @@ public class fileLogs extends Swing {
 						+ putty.getPath((i + "Confusion_Output.txt")) + " "
 						+ putty.getPath() + " " + "FDRfile" + " " + Class_Button_Sumbit;
 				putty.executeCommand(command);
+				System.out.println(command);
 			}
+			System.out.println(Class_Button_Sumbit);
+
 			;
 			String v1 = putty.readRemoteFile(putty.getPath("FDRfile"));
 			double TP = Double.valueOf((v1.split(";")[0].split("=")[1]));
@@ -113,6 +116,7 @@ public class fileLogs extends Swing {
 
 
 			final double newK_Amount = Double.valueOf(K_Amount);
+			final String classiication_final = Class_Button_Sumbit;
 			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 				@SuppressWarnings("static-access")
 				@Override
@@ -123,8 +127,20 @@ public class fileLogs extends Swing {
 					bd = bd.setScale(4, RoundingMode.HALF_UP);
 
 					System.out.println(bd);
-					graph.xData.add(newK_Amount);
-					graph.yData.add(FDR);
+//					graph.xData.add(newK_Amount);
+//					graph.yData.add(FDR);
+					if (graph.data.get(classiication_final + "xData").get(0) == 0) {
+						graph.data.get(classiication_final + "xData").set(0, newK_Amount);
+					} else {
+						graph.data.get(classiication_final + "xData").add(newK_Amount);
+					}
+
+					if (graph.data.get(classiication_final + "yData").get(0) == 0) {
+						graph.data.get(classiication_final + "yData").set(0, FDR);
+					} else {
+						graph.data.get(classiication_final + "yData").add(FDR);
+					}
+
 					graph.main();
 					return null;
 				}

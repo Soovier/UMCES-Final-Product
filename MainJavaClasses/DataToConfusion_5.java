@@ -32,7 +32,7 @@ public class DataToConfusion_5 {
 //		/*
 //		 * Arugment 1: ORIGINAL DATA BASE TAXONOMY FILE! Arugment 2: TRIMED TAXONOMY
 //		 * FILE! Arugment 3: NEW FILE OUTPUT NAME!
-////		 */
+//		 */
 		test.getClassification(args[2], args[5]);
 		test.ShellCommandExample(args[3], args[4]);
 	}
@@ -91,9 +91,9 @@ public class DataToConfusion_5 {
 			File FDRfile = new File(path + fileName);
 			FileWriter fw = new FileWriter(FDRfile);
 			Scanner UIS = new Scanner(FDRfile);
-			String Line = UIS.nextLine();
 
-			if (FDRfile.exists()) {
+			if (!fileIsEmpty(FDRfile)) {
+				String Line = UIS.nextLine();
 				int currentTP = Integer.valueOf(Line.split(";")[0].substring(3));
 				int currentFP = Integer.valueOf(Line.split(";")[1].substring(3));
 				fw.write("TP=" + (this.TP_Positive + currentTP) + ";FP=" + (this.TP_Negative + currentFP));
@@ -107,6 +107,10 @@ public class DataToConfusion_5 {
 			e.printStackTrace();
 		}	
 	}
+	
+	boolean fileIsEmpty(File file) {
+		  return file.length() == 0; 
+		}
 
 	public void AppendData(String orignalFile) {
 		try {
