@@ -69,6 +69,12 @@ public class CoordinateGraph {
 	}
 
 	public void main() {
+		System.out.println("RAN");
+
+		for (Map.Entry<String, List<Double>> e : data.entrySet()) {
+			System.out.println(e.getKey() + " " + e.getValue());
+		}
+		System.out.println("Done");
 		// Create Chart
 		XYChart chart = new XYChartBuilder().width(600).height(400).title("K-Folds Graph").xAxisTitle("K-Folds")
 				.yAxisTitle("False Discovery Rate").build();
@@ -118,4 +124,5 @@ public class CoordinateGraph {
 			e.printStackTrace();
 		}
 	}
+
 }

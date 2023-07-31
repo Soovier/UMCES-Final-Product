@@ -49,6 +49,7 @@ public class Swing extends JPanel {
 	public static HashMap<String, String> hashMap;
 	public JTextField searchField;
 	public String verifiedClass;
+	boolean Classification_Is_Active;
 
 	JPanel logsPanel;
 	JFrame frame;
@@ -83,7 +84,7 @@ public class Swing extends JPanel {
 //			}
 //
 //		};
-		gridPanel = new JPanel(new GridLayout(10, 2, 0, 5));
+		gridPanel = new JPanel(new GridLayout(11, 2, 0, 5));
 		gridPanel.setBackground(new Color(19, 108, 150));
 		gridPanel.setPreferredSize(new Dimension(250, 500));
 //		frame.add(centerPanel, BorderLayout.CENTER);
@@ -220,6 +221,10 @@ public class Swing extends JPanel {
 		gridPanel.add(b9);
 		b9.setBackground(Color.black);
 		b9.setForeground(Color.white);
+		JButton b11 = new JButton("All Classifications");
+		gridPanel.add(b11);
+		b11.setBackground(Color.black);
+		b11.setForeground(Color.white);
 
 		// Setting font styles for the buttons
 		b1.setFont(new Font("Times New Roman\r\n", Font.BOLD, 18));
@@ -232,6 +237,7 @@ public class Swing extends JPanel {
 		b8.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
 		b9.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
 		b10.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
+		b11.setFont(new Font("Baskerville Old Face" + "", Font.BOLD, 15));
 
 		// Setting focusability for the buttons
 		b1.setFocusable(false);
@@ -244,6 +250,7 @@ public class Swing extends JPanel {
 		b8.setFocusable(false);
 		b9.setFocusable(false);
 		b10.setFocusable(false);
+		b11.setFocusable(false);
 
 		// Adding action listeners to the buttons
 		b1.addActionListener(new ActionListener() {
@@ -342,9 +349,8 @@ public class Swing extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int cn = 0;
-				String newCommand = "find " + putty.getPath()
-						+ " -type f \\( -iname \"*.tax\" -o -iname \"*.fa\" -o -iname \"*.txt\" \\) ! -name \"12S_Combined.tax\" ! -name \"12S_Combined.fa\" -exec rm -f {} \\;";
-				putty.executeCommand(newCommand);
+				putty.removeCreatedFiles(true);
+//				putty.executeCommand(newCommand);
 				putty.RemoveFromDiretory("FDRfile");
 //				putty.executeCommand("find " + putty.getPath() + " -type f \\(rm FDRfile)");
 
@@ -362,15 +368,6 @@ public class Swing extends JPanel {
 							logsPanel.remove(label);
 							cn += 1;
 						}
-
-
-//						String[] dataname = { "Training_Fasta", "Training_Taxonomy", "Test_Fasta", "Test_Taxonomy" };
-//						for (int i = 0; i < dataname.length; i++) {
-//							cn += 1;
-//							if (labelText.contains(dataname[i])) {
-//								logsPanel.remove(label);
-//							}
-//						}
 					}
 				}
 
@@ -404,8 +401,13 @@ public class Swing extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Boolean ifRan = HasRequirments("FDR Data Request Has Been Sent!");
 				fileLogs log = new fileLogs(ifRan, putty, logsPanel);
-				log.getType(4, TaxonomyFile, FastaFile, getK_Amount(), verifiedClass);
-				
+				if (Classification_Is_Active) {
+					System.out.println("Active");
+					log.getType(5, TaxonomyFile, FastaFile, getK_Amount(), verifiedClass);
+				} else {
+					System.out.println("Not Active");
+					log.getType(4, TaxonomyFile, FastaFile, getK_Amount(), verifiedClass);
+				}
 				
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
@@ -473,6 +475,26 @@ public class Swing extends JPanel {
 			}
 		});
 
+		b11.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String[] buttons = { "Turn On", "Turn Off" };
+				int rc = JOptionPane.showOptionDialog(null, "Please Select What Classification You Want To Work With!",
+						"Confirmation", JOptionPane.PLAIN_MESSAGE, 0, null, buttons, buttons[0]);
+				if (rc == 0) {
+					JOptionPane.showMessageDialog(null, "Classifications Turned On", "Sucess 654",
+							JOptionPane.INFORMATION_MESSAGE);
+					Classification_Is_Active = true;
+				} else if (rc == 1) {
+					JOptionPane.showMessageDialog(null, "Classifications Turned Off", "Sucess 655",
+							JOptionPane.INFORMATION_MESSAGE);
+					Classification_Is_Active = false;
+				}
+			}
+
+
+		});
+
 	}
 
 
@@ -508,7 +530,7 @@ public class Swing extends JPanel {
 			String Error = "Please Set Your K-Amount.";
 			JOptionPane.showMessageDialog(null, Error, "Error: 111", JOptionPane.ERROR_MESSAGE);
 			return false;
-		} else if (verifiedClass.equals("")) {
+		} else if (verifiedClass.equals("") & !Classification_Is_Active) {
 			playSound(soundFilePath);
 			String Error = "Please Set Classification.";
 			JOptionPane.showMessageDialog(null, Error, "Error: 116", JOptionPane.ERROR_MESSAGE);

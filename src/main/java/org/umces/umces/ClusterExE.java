@@ -1,7 +1,6 @@
 package org.umces.umces;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.BufferedWriter;
@@ -235,11 +234,6 @@ public class ClusterExE {
 		v1.setFont(new Font("Century Gothic", Font.BOLD, 9));
 		logsPanel.add(v1);
 		hashMap.put(key, val);
-
-		int contentHeight = 0;
-		for (Component component : logsPanel.getComponents()) {
-			contentHeight += component.getPreferredSize().height;
-		}
 
 		// Set the preferred height of the logsPanel
 		logsPanel.setPreferredSize(new Dimension(200, 6000));

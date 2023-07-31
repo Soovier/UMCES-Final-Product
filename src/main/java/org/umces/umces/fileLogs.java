@@ -1,6 +1,7 @@
 package org.umces.umces;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.math.BigDecimal;
@@ -8,6 +9,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JFrame;
@@ -46,7 +48,6 @@ public class fileLogs extends Swing {
 		// Case O(n) Worst Case O(n)
 		switch (Type) {
 		case (1):
-
 			// Run the alignment K times
 			for (int i = 1; i <= K_Amount; i++) {// Takes Test and Training Fasta Data
 				putty.executeCommand(
@@ -94,16 +95,43 @@ public class fileLogs extends Swing {
 			break;
 
 		case (4):
-			this.getType(1, Tax, Fa, K_Amount, Class_Button_Sumbit);
-			this.getType(2, Tax, Fa, K_Amount, Class_Button_Sumbit);
-			this.getType(3, Tax, Fa, K_Amount, Class_Button_Sumbit);
+//			this.getType(1, Tax, Fa, K_Amount, Class_Button_Sumbit);
+//			this.getType(2, Tax, Fa, K_Amount, Class_Button_Sumbit);
+//			this.getType(3, Tax, Fa, K_Amount, Class_Button_Sumbit);
+			if (!checkForAlginment(K_Amount, Tax, Fa)) {
+				System.out.println("Creating Alignment");
+				this.getType(1, Tax, Fa, K_Amount, Class_Button_Sumbit);
+			}
+
+			if (!checkForAnnotations(K_Amount)) {
+				System.out.println("Creating Annotations");
+				this.getType(2, Tax, Fa, K_Amount, Class_Button_Sumbit);
+			}
+
+			if (!checkForTrimmed(K_Amount)) {
+				System.out.println("Creating Trimmed Annotations");
+				this.getType(3, Tax, Fa, K_Amount, Class_Button_Sumbit);
+			}
+
+			if (!checkForConfusion(K_Amount)) {
+				System.out.println("Creating Confusion Data");
+				for (int i = 1; i <= K_Amount; i++) {
+					String command = "java "
+							+ putty.getPath("UMCES-Final-Product/MainJavaClasses/DataToConfusion_5.java") + " " + Tax
+							+ " " + putty.getPath((i + "Trimmed_Annotation.txt")) + " "
+							+ putty.getPath((i + "Confusion_Output.txt")) + " " + putty.getPath() + " " + "FDRfile"
+							+ " " + Class_Button_Sumbit;
+					putty.executeCommand(command);
+				}
+			}
 
 			for (int i = 1; i <= K_Amount; i++) {
-				String command = "java " + putty.getPath("UMCES-Final-Product/MainJavaClasses/DataToConfusion_5.java")
-						+ " " + Tax + " " + putty.getPath((i + "Trimmed_Annotation.txt")) + " "
-						+ putty.getPath((i + "Confusion_Output.txt")) + " "
-						+ putty.getPath() + " " + "FDRfile" + " " + Class_Button_Sumbit;
-				putty.executeCommand(command);
+				String FDRcommand = "java " + putty.getPath("UMCES-Final-Product/MainJavaClasses/FDRjava.java") + " "
+						+ putty.getPath((i + "Confusion_Output.txt")) + " " + Class_Button_Sumbit + " "
+						+ putty.getPath()
+						+ " " + "FDRfile";
+				System.out.println("Done " + i);
+				putty.executeCommand(FDRcommand);
 			}
 
 			String v1 = putty.readRemoteFile(putty.getPath("FDRfile"));
@@ -111,9 +139,9 @@ public class fileLogs extends Swing {
 			double FP = Double.valueOf((v1.split(";")[1].split("=")[1]));
 			final double FDR = FP / (TP + FP);
 
-
 			final double newK_Amount = Double.valueOf(K_Amount);
 			final String classiication_final = Class_Button_Sumbit;
+
 			SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 				@SuppressWarnings("static-access")
 				@Override
@@ -123,9 +151,13 @@ public class fileLogs extends Swing {
 					BigDecimal bd = new BigDecimal(FDR);
 					bd = bd.setScale(4, RoundingMode.HALF_UP);
 
-					System.out.println(bd);
-//					graph.xData.add(newK_Amount);
-//					graph.yData.add(FDR);
+
+//					System.out.println("-----------------");
+//					System.out.println("BD: " + bd);
+//					System.out.println("Type: " + classiication_final);
+//					System.out.println("FDR: " + FDR);
+//					System.out.println("-----------------");
+
 					if (graph.data.get(classiication_final + "xData").get(0) == 0) {
 						graph.data.get(classiication_final + "xData").set(0, newK_Amount);
 					} else {
@@ -144,9 +176,20 @@ public class fileLogs extends Swing {
 			};
 			worker.execute();
 
+
 			super.playSound("UI-Items/Conformation.aifc");
 			String error4 = "Confusion_Data_Matrix Added Has Been Made";
-			JOptionPane.showMessageDialog(null, error4, "Sucess: 704", JOptionPane.INFORMATION_MESSAGE);
+//			JOptionPane.showMessageDialog(null, error4, "Sucess: 704", JOptionPane.INFORMATION_MESSAGE);
+			break;
+		case (5):
+			String[] classArray = { "k", "p", "c", "o", "f", "g", "s" };
+			for (int i = 0; i < classArray.length; i++) {
+				this.getType(4, Tax, Fa, K_Amount, classArray[i]);
+			}
+
+			CoordinateGraph tester2 = new CoordinateGraph();
+			tester2.main();
+			System.out.println("All Graphs Made");
 			break;
 		default:
 			super.playSound("UI-Items/ErrorSound.aifc");
@@ -154,6 +197,67 @@ public class fileLogs extends Swing {
 			JOptionPane.showMessageDialog(null, error, "Error: 707", JOptionPane.ERROR_MESSAGE);
 			break;
 		}
+	}
+
+	public boolean checkForConfusion(int kAmount) {
+		List<String> filesInRemote = putty.listFilesInDirectory();
+		for (int i = 1; i <= kAmount; i++) {
+			if (!filesInRemote.contains(i + "Confusion_Output.txt")) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean checkForAlginment(int kAmount, String taxFile, String fastaFile) {
+		List<String> filesInRemote = putty.listFilesInDirectory();
+		for (int i = 1; i <= kAmount; i++) {
+			if (!filesInRemote.contains(i + "TestAlignments.txt")) {
+				putty.removeCreatedFiles(false);
+				putty.RemoveFromDiretory("FDRfile");
+
+				hashMap.clear();
+				Component[] components = logsPanel.getComponents();
+				for (Component component : components) {
+					if (component instanceof JLabel) {
+						JLabel label = (JLabel) component;
+						String labelText = label.getText();
+
+						if (labelText.contains("Logs")) {
+							continue;
+						} else {
+							logsPanel.remove(label);
+						}
+					}
+				}
+
+				logsPanel.revalidate();
+				logsPanel.repaint();
+
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean checkForAnnotations(int kAmount) {
+		List<String> filesInRemote = putty.listFilesInDirectory();
+		for (int i = 1; i <= kAmount; i++) {
+			if (!filesInRemote.contains(i + "Annotation_Data.tax")) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public boolean checkForTrimmed(int kAmount) {
+		List<String> filesInRemote = putty.listFilesInDirectory();
+		for (int i = 1; i <= kAmount; i++) {
+			if (!filesInRemote.contains(i + "Trimmed_Annotation.txt")) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 		public static String getCurrentTimeString() {

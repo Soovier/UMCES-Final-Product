@@ -139,6 +139,14 @@ public class UnixHandler {
 		return fileList;
 	}
 
+
+	// Simple wrapper class
+	class FileInfo {
+		String name;
+		long size;
+		// other fields
+	}
+
 	public String readRemoteFile(String fileName) {
 	    StringBuilder fileContent = new StringBuilder();
 	    try {
@@ -155,6 +163,32 @@ public class UnixHandler {
 	        e.printStackTrace();
 	    }
 	    return fileContent.toString();
+	}
+
+	public void removeCreatedFiles(boolean Everything) {
+		if (Everything) {
+			List<String> rf = this.listFilesInDirectory();
+			String[] remove = { "TestAlignments", "Trimmed_Annotation", "Annotation_Data", "Training_", "Test_",
+					"Confusion" };
+			for (int i = 0; i < rf.size(); i++) {
+				if (rf.get(i).contains(remove[0]) || rf.get(i).contains(remove[1]) || rf.get(i).contains(remove[2])
+						|| rf.get(i).contains(remove[3]) || rf.get(i).contains(remove[4])
+						|| rf.get(i).contains(remove[5])) {
+					this.RemoveFromDiretory(rf.get(i));
+				}
+			}
+		} else {
+			List<String> rf = this.listFilesInDirectory();
+			String[] remove = { "TestAlignments", "Trimmed_Annotation", "Annotation_Data", "Training_", "Test_",
+					"Confusion" };
+			for (int i = 0; i < rf.size(); i++) {
+				if (rf.get(i).contains(remove[0]) || rf.get(i).contains(remove[1]) || rf.get(i).contains(remove[2])
+						|| rf.get(i).contains(remove[5])) {
+					this.RemoveFromDiretory(rf.get(i));
+				}
+			}
+		}
+
 	}
 
 	// Helps locate files in the Unix Directory
